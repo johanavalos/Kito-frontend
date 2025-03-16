@@ -9,15 +9,15 @@ import { AuthContextProvider } from "./contexts/AuthContext";
 
 function App() {
     return (
-        <Router>
-            <Routes>
-                <AuthContextProvider>
+        <AuthContextProvider>
+            <Router>
+                <Routes>
                     <Route path='/' exact Component={Home} />
                     <Route path='/login' exact Component={Login} />
                     <Route path='/signup' exact Component={Signup} />
-                </AuthContextProvider>
-            </Routes>
-        </Router>
+                </Routes>
+            </Router>
+        </AuthContextProvider>
     );
 }
 
