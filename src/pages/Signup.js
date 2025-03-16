@@ -1,19 +1,47 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"
+
+import { useAuth, useAuthUpdate } from '../contexts/AuthContext';
+import { apiUrl } from '../config/urls';
 
 import AuthLayout from '../layouts/AuthLayout';
 
 import signupSchema from '../schemas/signupSchema';
 
 function Signup() {
+
+    const navigate = useNavigate();
+
+    const authContext = useAuth()
+    const setAuthContext = useAuthUpdate()
+
     const initialValues = {
         username: "",
         password: "",
         confirmPassword: ""
     }
-    const signup = () => {
 
+    useEffect(() => {
+        console.log(authContext)
+        if (authContext.status) {
+            navigate("/")
+        }
+    }, [authContext, navigate])
+
+    const signup = (data) => {
+        console.log("WAOS")
+        axios.post(`${apiUrl}/auth/signup`, data)
+            .then((response) => {
+                console.log(response.data.jwt);
+                setAuthContext({ "username": response.data.username, "status": true })
+                localStorage.setItem("accessToken", response.data.jwt)
+            })
+            .catch((error) => {
+                alert(error.response.data)
+            })
     }
     return (
         <AuthLayout>
