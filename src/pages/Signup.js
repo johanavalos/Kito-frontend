@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"
 
 import { useAuth, useAuthUpdate } from '../contexts/AuthContext';
 import { apiUrl } from '../config/urls';
@@ -25,19 +25,19 @@ function Signup() {
     }
 
     useEffect(() => {
-        console.log(authContext)
         if (authContext.status) {
-            navigate("/")
+            navigate("/", {"replace": true})
         }
     }, [authContext, navigate])
+
 
     const signup = (data) => {
         console.log("WAOS")
         axios.post(`${apiUrl}/auth/signup`, data)
             .then((response) => {
-                console.log(response.data.jwt);
+                console.log(response.data.accessToken);
                 setAuthContext({ "username": response.data.username, "status": true })
-                localStorage.setItem("accessToken", response.data.jwt)
+                localStorage.setItem("accessToken", response.data.accessToken)
             })
             .catch((error) => {
                 alert(error.response.data)
@@ -45,6 +45,7 @@ function Signup() {
     }
     return (
         <AuthLayout>
+            <title>Sign up</title>
             <h1 className='form-title'>Create new account</h1>
             <Formik initialValues={initialValues} onSubmit={signup} validationSchema={signupSchema}>
 
